@@ -1,6 +1,10 @@
 from django.shortcuts import render
-from .models import City, Year, Plan, Fact
+from django.views.decorators.cache import never_cache
 
+from .models import City, Fact, Plan, Year
+
+
+@never_cache
 def index(request):
     cities = City.objects.all()
     if request.method == "POST":
@@ -18,8 +22,8 @@ def index(request):
                 data[city_name]['years'].append(y.year)
                 plan = Plan.objects.filter(year=y).first()
                 fact = Fact.objects.filter(year=y).first()
-                data[city_name]['plan'].append(plan.amount if plan else 0)
-                data[city_name]['fact'].append(fact.amount if fact else 0)
+                data[city_name]['plan'].append(float(plan.amount) if plan else 0)
+                data[city_name]['fact'].append(float(fact.amount) if fact else 0)
 
         return render(request, 'index.html', {'cities': cities, 'data': data}) 
     return render(request, 'index.html', {'cities': cities})

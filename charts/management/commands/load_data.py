@@ -1,6 +1,8 @@
-from django.core.management.base import BaseCommand
 import csv
-from charts.models import City, Year, Plan, Fact
+
+from django.core.management.base import BaseCommand
+
+from charts.models import City, Fact, Plan, Year
 
 
 class Command(BaseCommand):

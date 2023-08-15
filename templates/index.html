@@ -15,15 +15,22 @@
     <link href="{% static 'css/animate.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-    <script src="js/plugins/chartJs/Chart.min.js"></script>
-    
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+    <script src="{% static 'js/plugins/chartJs/Chart.min.js' %}"></script>
+    <script src="{% static 'js/demo/chartjs-demo.js' %}"></script>
+
+    <script>
+        window.onload = function() {
+            document.forms[0].reset();
+        }
+    </script>
+ 
 </head>
 
 <body>
@@ -287,7 +294,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="profile.html">
-                                    <img alt="image" class="rounded-circle" src="img/a7.jpg">
+                                    <img alt="image" class="rounded-circle" src="{% static 'img/a7.jpg' %}">
                                 </a>
                                 <div class="media-body">
                                     <small class="float-right">46h ago</small>
@@ -300,7 +307,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="profile.html">
-                                    <img alt="image" class="rounded-circle" src="img/a4.jpg">
+                                    <img alt="image" class="rounded-circle" src="{% static 'img/a4.jpg' %}">
                                 </a>
                                 <div class="media-body ">
                                     <small class="float-right text-navy">5h ago</small>
@@ -313,7 +320,7 @@
                         <li>
                             <div class="dropdown-messages-box">
                                 <a class="dropdown-item float-left" href="profile.html">
-                                    <img alt="image" class="rounded-circle" src="img/profile.jpg">
+                                    <img alt="image" class="rounded-circle" src="{% static 'img/profile.jpg' %}">
                                 </a>
                                 <div class="media-body ">
                                     <small class="float-right">23h ago</small>
@@ -404,63 +411,64 @@
         <div class="ibox-title">
             <h5>Выберите города для отображения графиков:</h5>
         </div>
+        <form method="post" class="ibox-content" autocomplete="off">
         
-        <form method="post" class="ibox-content">
             {% csrf_token %}
             <div>
                 {% for city in cities %}
-                <input type="checkbox" id="{{ city.name }}" name="city" value="{{ city.name }}">
-                <label for="{{ city.name }}">{{ city.name }}</label><br>
+                <input type="checkbox" id="{{ city.name }}" name="city" value="{{ city.name }}" autocomplete="off">
+                <label for="{{ city.name }}">{{ city.name }} </label><br>
                 {% endfor %}
             </div>
             
             <input type="submit" value="Применить">
         </form>
         
-        {% if data %}
-            {% for city, values in data.items %}
-            <div class="ibox ">
-                <div class="ibox-title">
-                    <h5>График продаж для города {{ city }}</h5>
-                </div>
-                <div class="ibox-content">
-                    <div>
-                        <canvas id="chart_{{ city }}"></canvas>
-                    </div>
-                </div>
-            </div>
-        
-            <script>
-                var ctx = document.getElementById('chart_{{ city }}').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: {{ values.years|safe }},
-                        datasets: [{
-                            label: 'План',
-                            data: {{ values.plan|safe }},
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Факт',
-                            data: {{ values.fact|safe }},
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            </script>
-            {% endfor %}
+        {% if data %} 
+            {% for city, values in data.items %} 
+            <div class="ibox "> 
+                <div class="ibox-title"> 
+                    <h5>График продаж для города {{ city }}</h5> 
+                </div> 
+                <div class="ibox-content"> 
+                    <div> 
+                        <canvas id="chart_{{ city }}"></canvas> 
+                    </div> 
+                </div> 
+            </div> 
+            <script>  
+                var ctx = document.getElementById("chart_{{ city }}").getContext('2d'); 
+                var myChart = new Chart(ctx, { 
+                    type: 'bar', 
+                    data: { 
+                        labels: {{ values.years|safe }}, 
+                        datasets: [{ 
+                            label: 'Плановые продажи', 
+                            data: {{ values.plan|safe }}, 
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+                            borderColor: 'rgba(75, 192, 192, 1)', 
+                            borderWidth: 1 
+                        }, 
+                        { 
+                            label: 'Фактические продажи', 
+                            data: {{ values.fact|safe }}, 
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)', 
+                            borderColor: 'rgba(255, 99, 132, 1)', 
+                            borderWidth: 1 
+                        }] 
+                    }, 
+                    options: { 
+                        scales: { 
+                            yAxes: [{ 
+                                ticks: { 
+                                    beginAtZero: true 
+                                } 
+                            }] 
+                        } 
+                    } 
+                }); 
+            </script> 
+            {% endfor %} 
         {% endif %}
         
         <div class="footer">
@@ -473,32 +481,12 @@
         </div>
         
         <script>
-            // Get the current year
             const currentYear = new Date().getFullYear();
-        
-            // Set the current year in the copyright div
             document.getElementById('copyrightDiv').innerHTML += currentYear;
         </script>
 
         </div>
         </div>
-
-
-
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
-    <!-- ChartJS-->
-    <script src="js/plugins/chartJs/Chart.min.js"></script>
-    <script src="js/demo/chartjs-demo.js"></script>
 
 </body>
 
