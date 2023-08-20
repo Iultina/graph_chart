@@ -162,3 +162,4 @@ cython_debug/
 # others
 .replit
 replit.nix
+remember.py
