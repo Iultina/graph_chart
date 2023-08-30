@@ -28,12 +28,12 @@
 4. Загрузите данные в базу данных, используя python manage.py load_data
 5. Запустите сервер разработки с помощью python manage.py runserver
 
-## Автор
+## Стек технологий:
+- Django
+- Bootstrap
+- JavaScript
 
-Iultina 
-Кириленко Валентина
+### Автор
+Tina Kirilenko 📧 Telegram: @Mi_2018
 
-## Контакты
-
-Телеграм: @Mi_2018
-https://github.com/Iultina/
+🔗 LinkedIn: linkedin.com/in/iultina
